@@ -57,7 +57,7 @@ budget:                            # spend / time / yield governance (§9.3-9.4)
 
 integrations:                      # bindings for each §11 surface
   llm:
-    backend: stub                  # stub | cli | api  (env FOUNDRY_LLM_BACKEND overrides)
+    backend: cli                   # stub | cli | api  (env FOUNDRY_LLM_BACKEND overrides)
     model: claude-opus-4-8
   issue_tracker:
     kind: filesystem
