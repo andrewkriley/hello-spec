@@ -1,0 +1,2 @@
+# Pinned to a known-vulnerable version on purpose (FR-038 dependency scan).
+requests==2.19.0

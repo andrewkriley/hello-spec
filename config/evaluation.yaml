@@ -1,0 +1,65 @@
+# Foundry evaluation configuration (spec.md §12). One document defines one
+# evaluation. Every section the spec requires is present. Secrets are NOT here
+# (FR-127) — see secrets.env.example. Paths are relative to this file.
+
+target:
+  root: ../target/vulnerable        # source under evaluation (read-only mount)
+  revision: HEAD                    # pinned revision
+  include: ["**/*.py"]
+  exclude: ["samples"]              # out-of-scope (Triager -> not-applicable)
+
+# Deployment under test. Set to "none" to run without a testbed (the Validator
+# then never sets `exploited`, per Constitution VII).
+testbed:
+  description: local disposable demo testbed
+  reset: true
+
+goals:
+  attack_goals:
+    - injection (SQL / command) via request handlers
+    - broken object-level authorization (IDOR)
+    - hardcoded credentials and secret exposure
+    - insecure path handling
+
+rules:
+  hard_rules:                       # injected into every agent prompt (§9.2)
+    - Do NOT perform denial-of-service or load testing.
+    - Do NOT delete or modify target data.
+    - Do NOT change credentials or account state.
+  out_of_scope_hosts: ["*.prod.internal"]
+
+detection:
+  corpus: ../rules                  # CodeGuard-format rule corpus (FR-041)
+
+fleet:                              # per-role instance counts + session limits
+  orchestrator: {instances: 1}
+  indexer: {instances: 1}
+  cartographer: {instances: 1}
+  detector: {instances: 1, soft_turns: 6, hard_turns: 10}
+  triager: {instances: 1}
+  validator: {instances: 1}
+  coverage_guide: {instances: 1}
+  reporter: {instances: 1}
+
+sandbox:                            # enforced by infrastructure (Constitution IX)
+  egress_allowlist:
+    - localhost                     # claude -p CLI backend
+    - api.anthropic.com             # Anthropic API backend
+  readonly_paths: ["../target"]
+  writable_paths: ["../build"]
+
+budget:                            # spend / time / yield governance (§9.3-9.4)
+  spend_cap: 5.00                  # currency; remove to run uncapped (warns)
+  time_cap: 50                     # logical ticks
+  yield_threshold: 0.5
+  yield_window: 5
+  min_runtime: 1
+
+integrations:                      # bindings for each §11 surface
+  llm:
+    backend: stub                  # stub | cli | api  (env FOUNDRY_LLM_BACKEND overrides)
+    model: claude-opus-4-8
+  issue_tracker:
+    kind: filesystem
+  artifacts_dir: ../build/run
+  reports_dir: ../build/reports

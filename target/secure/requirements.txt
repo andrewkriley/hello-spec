@@ -1,0 +1,2 @@
+# Patched, non-vulnerable dependency version.
+requests==2.32.3
