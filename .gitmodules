@@ -1,0 +1,6 @@
+[submodule "project-codeguard"]
+	path = project-codeguard
+	url = https://github.com/cosai-oasis/project-codeguard.git
+[submodule "foundry-security-spec"]
+	path = foundry-security-spec
+	url = https://github.com/CiscoDevNet/foundry-security-spec.git
