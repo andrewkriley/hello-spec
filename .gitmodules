@@ -4,3 +4,6 @@
 [submodule "foundry-security-spec"]
 	path = foundry-security-spec
 	url = https://github.com/CiscoDevNet/foundry-security-spec.git
+[submodule "spec-kit"]
+	path = spec-kit
+	url = https://github.com/github/spec-kit.git

@@ -11,8 +11,13 @@ security projects, by wiring them together into one small, runnable system:
   functional requirements, an 11-principle constitution, an evidence gate, a
   coordination substrate, governance and observability).
 
-Both are vendored here as git submodules (`project-codeguard/`,
-`foundry-security-spec/`) so you can read the source specs alongside the code.
+A third submodule, **[spec-kit](https://github.com/github/spec-kit)**, provides
+the spec-driven-development workflow Foundry is designed to be consumed with
+(see [Spec-driven development](#spec-driven-development-spec-kit) below).
+
+All three are vendored here as git submodules (`project-codeguard/`,
+`foundry-security-spec/`, `spec-kit/`) so you can read the source specs
+alongside the code.
 
 ## The idea in one sentence
 
@@ -100,6 +105,30 @@ rule-gap flywheel.
 
 Against `target/secure/` the same pipeline finds **zero** true-positives: the
 CodeGuard controls close every finding.
+
+## Spec-driven development (spec-kit)
+
+This repo is initialised with [spec-kit](https://github.com/github/spec-kit), the
+toolkit Foundry's README assumes. That gives you the spec-driven workflow as
+Claude Code slash commands (`/speckit-constitution`, `/speckit-specify`,
+`/speckit-clarify`, `/speckit-plan`, `/speckit-tasks`, `/speckit-implement`,
+`/speckit-analyze`), backed by `.specify/` (templates + scripts).
+
+The project's governing constitution lives at
+**`.specify/memory/constitution.md`** — it adopts the **Foundry constitution's
+11 principles**, which is exactly where Foundry says to place them before running
+the workflow. `/speckit-plan` and `/speckit-analyze` then check any plan or task
+list against those principles.
+
+To (re)install or update spec-kit's scaffolding:
+
+```bash
+uvx --from ./spec-kit specify init --here --integration claude --script sh --force
+```
+
+This makes hello-spec a worked example of the *whole* Foundry loop: the seed spec
+(`foundry-security-spec/`) → spec-kit workflow → an implementation
+(`hello_spec/`) that the constitution governs and the tests verify.
 
 ## Learning path
 
