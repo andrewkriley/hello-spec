@@ -18,8 +18,7 @@ from typing import List
 from ..base import Role
 
 
-class DeepTester(Role):
-    name = "deep-tester"
+from .deep_tester import DeepTester   # §6.1 — fully implemented extension role
 
 
 from .variant_hunter import VariantHunter   # §6.2 — fully implemented extension role

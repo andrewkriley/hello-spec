@@ -27,8 +27,8 @@ from .observability.session_log import SessionLog
 from .roles.cartographer import Cartographer
 from .roles.coverage_guide import CoverageGuide
 from .roles.detector import Detector
-from .roles.extensions import (AttackMapper, Remediator, SelfImprover,
-                               VariantHunter)
+from .roles.extensions import (AttackMapper, DeepTester, Remediator,
+                               SelfImprover, VariantHunter)
 from .roles.indexer import Indexer
 from .roles.orchestrator import Orchestrator
 from .roles.reporter import Reporter
@@ -179,6 +179,12 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         attack_mapper = role(AttackMapper, "attack-mapper")
         attack_paths = attack_mapper.map_attacks(store, sandbox, reports_dir, tick)
 
+    # §6.1 Deep-Tester (opt-in extension): fuzz a runnable entry point.
+    deep_test = []
+    if cfg.section("fleet").get("deep_tester", {}).get("enabled"):
+        deep_tester = role(DeepTester, "deep-tester")
+        deep_test = deep_tester.fuzz(target_root, sandbox, reports_dir, tick)
+
     store.persist()
     log.record(event="status", **orch.status(store))
     log.persist()
@@ -202,6 +208,7 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         "remediations": [c.to_dict() for c in remediations],
         "variants": [v.to_dict() for v in variants],
         "attack_paths": [p.to_dict() for p in attack_paths],
+        "deep_test": [d.to_dict() for d in deep_test],
         "coverage_complete": cov.complete,
         "auto_stop": auto_stop,
         "security_map": {
@@ -249,6 +256,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         for p in result["attack_paths"]:
             print(f"  {p['entry_class']} ({p['entry_location']}) → "
                   f"{p['impact_class']} ({p['impact_location']})")
+    if result.get("deep_test"):
+        print("\n--- deep-tester crashes (found by running the code) ---")
+        for d in result["deep_test"]:
+            print(f"  {d['crash_type']:<12} in {d['entry_point']} "
+                  f"on input {d['sample_input']!r}")
     return 0
 
 
