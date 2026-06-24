@@ -41,11 +41,16 @@ history). New features follow this order; the early engine PRs predate it.
 > seed assumes" — so this repo makes that literal.
 
 A tiny, deliberately-vulnerable target app is scanned by **CodeGuard-format
-rules** inside a miniature **Foundry engine** that implements all 8 roles, the
-full finding lifecycle, the coordination substrate, governance, observability,
-and demonstrably honours all 11 constitutional principles. The *fixes* in the
-secure twin apply CodeGuard's secure-by-default controls — and the engine then
-finds nothing.
+rules** inside a miniature **Foundry engine** that implements all **8 core roles
+and all 5 extension roles** (§6.1–§6.5 — Deep-Tester, Variant-Hunter,
+Attack-Mapper, Remediator, Self-Improver), the full finding lifecycle, the
+coordination substrate, governance, observability, and demonstrably honours all
+11 constitutional principles. The *fixes* in the secure twin apply CodeGuard's
+secure-by-default controls — and the engine then finds nothing.
+
+> **Want to see it?** A guided run-it-yourself tour is in
+> [`docs/SHOWCASE.md`](docs/SHOWCASE.md); diagrams in
+> [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## What's here
 
@@ -147,17 +152,23 @@ This makes hello-spec a worked example of the *whole* Foundry loop: the seed spe
 (`foundry-security-spec/`) → spec-kit workflow → an implementation
 (`hello_spec/`) that the constitution governs and the tests verify.
 
-## Remediator (opt-in extension role)
+## Extension roles (§6) — all implemented
 
-The Foundry **Remediator** (§6.4) is implemented as a worked example of the
-spec-driven workflow (`specs/001-remediator-role/`). When enabled
-(`fleet.remediator.enabled` in `config/evaluation.yaml`), after reporting it
-proposes a candidate fix for each confirmed true-positive and **verifies** it by
-applying the patch to an isolated copy and re-running detection — labelling it
-`verified` only if the finding closes and nothing new appears. It never mutates
-the target and never auto-applies (Constitution X); unmapped classes are reported
-`no-control`. `make scan` prints the candidate fixes; artifacts land in
-`build/reports/remediation-*.json`.
+All five Foundry extension roles are built as worked examples of the spec-driven
+workflow (each has a `specs/00X-*/` spec → plan → tasks). Opt-in via the `fleet`
+section of `config/evaluation.yaml`; `make scan` prints each one's output and
+writes artifacts under `build/reports/`.
+
+| Role | What it does |
+|---|---|
+| **Deep-Tester** (§6.1) | generates inputs and *executes* a runnable parser in an isolated subprocess — finds crashes static rules can't |
+| **Variant-Hunter** (§6.2) | turns a confirmed bug into leads for the same pattern elsewhere (incl. out-of-scope) |
+| **Attack-Mapper** (§6.3) | chains findings into attack paths (foothold → impact) |
+| **Remediator** (§6.4) | proposes a fix per confirmed bug and **verifies** it on an isolated copy; never mutates the target |
+| **Self-Improver** (§6.5) | authors a real, validator-passing CodeGuard rule for a rule-gap and verifies it — the detection→prevention flywheel |
+
+Every one is read-only/proposal-only with respect to the target and the corpus —
+the operator accepts what lands (Constitution X).
 
 ## Learning path
 
