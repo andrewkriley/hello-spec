@@ -68,6 +68,31 @@ principle does not apply to this feature.
 - [ ] **XI. Persist Atomically** — shared artifacts are written-then-swapped;
       no delete-then-write.
 
+## CodeGuard Security Check
+
+*GATE: the SECURE-CODING gate, parallel to the Constitution Check (which covers
+architectural invariants). See [`docs/METHODOLOGY.md`](../../docs/METHODOLOGY.md)
+— this is CodeGuard's "Hat 1". The plan AND the implementation diff must clear it.*
+
+CodeGuard rules: `project-codeguard/sources/rules/` + this repo's `rules/`. Mark
+N/A with a one-line reason where a class does not apply to this feature.
+
+- [ ] **Secrets** (always-apply) — no hardcoded credentials/keys/tokens; secrets
+      read from env/secret store, never committed.
+- [ ] **Input validation / injection** — untrusted input is never string-built
+      into SQL, shell, paths, or queries; use parameterized/argv/allowlist forms.
+- [ ] **Safe subprocess & file handling** — `shell=False` + argv; validated/
+      contained paths; temp files in designated dirs; writes go through the sandbox.
+- [ ] **Deserialization & parsing** — `yaml.safe_load` (not `load`); no `pickle`/
+      `eval`/`exec` on untrusted data.
+- [ ] **Crypto** (if used) — modern algorithms only; constant-time comparison for
+      secrets/tokens.
+- [ ] **Logging & privacy** — no secrets/PII in logs; discarded work logged, not
+      silently dropped.
+- [ ] **Supply chain** — new dependencies pinned and justified.
+- [ ] **Pre-merge review** — the diff is reviewed against CodeGuard (the
+      `security-review` skill / `codeguard-reviewer` agent) and the result recorded.
+
 ## Project Structure
 
 ### Documentation (this feature)

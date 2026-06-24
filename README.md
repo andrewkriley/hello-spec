@@ -23,6 +23,17 @@ alongside the code.
 > explainer at **[`docs/visual/index.html`](docs/visual/index.html)** — or the
 > one-page **[`docs/visual/poster.pdf`](docs/visual/poster.pdf)**. No jargon required.
 
+## How the three pieces fit (canonical order)
+
+> **Foundry** (spec + constitution) → consumed by **spec-kit** (clarify → specify
+> → plan → tasks → implement, governed by the Foundry constitution) → steered &
+> reviewed by **CodeGuard** (secure-coding) → a working system whose Detector
+> *also* consumes CodeGuard rules at runtime.
+
+See **[`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)** for the full mental model
+(CodeGuard's two roles, the two gates, and the honest "built engine-first"
+history). New features follow this order; the early engine PRs predate it.
+
 ## The idea in one sentence
 
 > **CodeGuard supplies the detection knowledge; Foundry is the engine that
