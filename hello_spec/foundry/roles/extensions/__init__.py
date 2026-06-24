@@ -22,12 +22,7 @@ class DeepTester(Role):
     name = "deep-tester"
 
 
-class VariantHunter(Role):
-    name = "variant-hunter"
-
-    def hunt(self, store, weakness_class: str) -> List[str]:
-        """Replicate a confirmed pattern: list other findings of the same class."""
-        return [f.symbol for f in store.all() if f.weakness_class == weakness_class]
+from .variant_hunter import VariantHunter   # §6.2 — fully implemented extension role
 
 
 class AttackMapper(Role):

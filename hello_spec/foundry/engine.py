@@ -161,6 +161,12 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         remediations = remediator.remediate(store, index, target_root, rules_dir,
                                             sandbox, reports_dir, secure_dir, tick)
 
+    # §6.2 Variant-Hunter (opt-in extension): leads for siblings of confirmed bugs.
+    variants = []
+    if cfg.section("fleet").get("variant_hunter", {}).get("enabled"):
+        variant_hunter = role(VariantHunter, "variant-hunter")
+        variants = variant_hunter.hunt(store, sandbox, reports_dir, tick)
+
     store.persist()
     log.record(event="status", **orch.status(store))
     log.persist()
@@ -182,6 +188,7 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         "rule_gaps": [g.weakness_class for g in det.rule_gaps],
         "rule_proposals": proposals,
         "remediations": [c.to_dict() for c in remediations],
+        "variants": [v.to_dict() for v in variants],
         "coverage_complete": cov.complete,
         "auto_stop": auto_stop,
         "security_map": {
@@ -217,6 +224,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         for c in result["remediations"]:
             tail = c["control"] if c["status"] != "no-control" else c["reason"]
             print(f"  [{c['status']:<11}] {c['weakness_class']:<8} {tail}")
+    if result.get("variants"):
+        print("\n--- variant-hunter leads (same pattern found elsewhere) ---")
+        for v in result["variants"]:
+            print(f"  {v['weakness_class']:<8} also at {v['location']} "
+                  f"[{v['verdict']}]")
     return 0
 
 
