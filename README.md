@@ -19,6 +19,10 @@ All three are vendored here as git submodules (`project-codeguard/`,
 `foundry-security-spec/`, `spec-kit/`) so you can read the source specs
 alongside the code.
 
+> 🟢 **New here, or not technical?** Open the plain-language, illustrated
+> explainer at **[`docs/visual/index.html`](docs/visual/index.html)** — or the
+> one-page **[`docs/visual/poster.pdf`](docs/visual/poster.pdf)**. No jargon required.
+
 ## The idea in one sentence
 
 > **CodeGuard supplies the detection knowledge; Foundry is the engine that
