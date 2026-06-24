@@ -79,12 +79,14 @@ Foundry agents reach a model through one sandboxed adapter
 
 | Backend | How | Notes |
 |---|---|---|
-| `stub` (default) | `make scan` | deterministic, offline, reproducible (honours NFR-004) |
-| `cli` | `FOUNDRY_LLM_BACKEND=cli make scan` | shells out to the local `claude -p` CLI |
+| `cli` (config default) | `make scan` | shells out to the local `claude -p` CLI |
+| `stub` | `FOUNDRY_LLM_BACKEND=stub make scan` | deterministic, offline, reproducible (honours NFR-004); pinned by the tests |
 | `api` | `FOUNDRY_LLM_BACKEND=api ANTHROPIC_API_KEY=… make scan` | Anthropic API (`pip install '.[api]'`) |
 
-Every backend is routed through the sandbox, so even the real ones cannot reach
-a host outside the egress allowlist (Constitution IX).
+In `cli`/`api` the **Detector** evaluates the rules and the **Triager** assigns
+verdicts using the model (the Cartographer also narrates with it); in `stub` all
+of these are deterministic. Every backend is routed through the sandbox, so even
+the real ones cannot reach a host outside the egress allowlist (Constitution IX).
 
 ## What a run shows
 

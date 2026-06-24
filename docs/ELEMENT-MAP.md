@@ -16,7 +16,7 @@ Paths are relative to the repo root. Foundry refs are `spec.md` §/FR numbers an
 | Orchestrator | §5.1 / FR-001–019 | `hello_spec/foundry/roles/orchestrator.py` (lifecycle, operator messages, override, status) |
 | Indexer | §5.2 / FR-020–029 | `hello_spec/foundry/roles/indexer.py` (`ast` symbols, call graph, `resolves()`) |
 | Cartographer | §5.3 / FR-030–036a | `hello_spec/foundry/roles/cartographer.py` (entry points, trust boundaries, data flows, threat model) |
-| Detector | §5.4 / FR-037–049 | `hello_spec/foundry/roles/detector.py` (rule sweep, dep scan, secret scan, exploratory, rule-gap) |
+| Detector | §5.4 / FR-037–049 | `hello_spec/foundry/roles/detector.py` (rule sweep, dep scan, secret scan, exploratory, rule-gap). The rule sweep is **LLM-evaluated** in `cli`/`api` (one model call per function, FR-037), deterministic matchers in `stub` (tests), with fallback to matchers on model error. |
 | Triager | §5.5 / FR-050–059 | `hello_spec/foundry/roles/triager.py` (5 verdicts, evidence gate) |
 | Validator | §5.6 / FR-060–066 | `hello_spec/foundry/roles/validator.py` (clean-room reproduction, sets `exploited`) |
 | Coverage-Guide | §5.7 / FR-067–074 | `hello_spec/foundry/roles/coverage_guide.py` (checklist, coverage-complete) |
