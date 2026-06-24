@@ -108,6 +108,12 @@ Each is enforced in code and asserted in `tests/test_principles.py`:
 
 ## Project CodeGuard
 
+CodeGuard plays **two roles** here (see [`METHODOLOGY.md`](METHODOLOGY.md)):
+**Hat 2** — the Detector's runtime rule corpus (the table below); and **Hat 1** —
+the secure-coding gate that steers the plan and reviews the implementation
+(`.specify/templates/plan-template.md` "CodeGuard Security Check" + the engine
+review in [`security-review.md`](security-review.md)).
+
 | Element | CodeGuard ref | Where it is exercised |
 |---|---|---|
 | Rule format (frontmatter: description/languages/tags/alwaysApply) | `sources/rules/core/*` | `rules/codeguard-*.md` (5 authored rules) |

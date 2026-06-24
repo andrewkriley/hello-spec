@@ -77,6 +77,22 @@ Evaluated against `.specify/memory/constitution.md` (Foundry 11 principles):
 
 **Result**: PASS — no violations; Complexity Tracking not required.
 
+## CodeGuard Security Check
+
+*Gate B (secure-coding), parallel to the Constitution Check — see
+[`docs/METHODOLOGY.md`](../../docs/METHODOLOGY.md). Added retrospectively; the
+gate post-dates this plan.*
+
+- [x] **Secrets** — N/A; the role reads no credentials.
+- [x] **Input validation / injection** — the patch is built from the secure twin
+      and applied to an isolated copy; no untrusted string-built commands/SQL.
+- [x] **Safe subprocess & file handling** — temp copy via `tempfile.mkdtemp`,
+      writes through the sandbox, target never modified.
+- [x] **Deserialization / crypto / logging / supply-chain** — N/A or unchanged.
+- [x] **Pre-merge review** — covered by the engine-wide CodeGuard review,
+      verdict CLEAN ([`docs/security-review.md`](../../docs/security-review.md),
+      2026-06-24).
+
 ## Project Structure
 
 ### Documentation (this feature)

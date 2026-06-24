@@ -31,6 +31,20 @@ verdicts, and never touches the target; it writes a variant report for review.
 
 **Result**: PASS — no violations.
 
+## CodeGuard Security Check
+
+*Gate B (secure-coding), parallel to the Constitution Check — see
+[`docs/METHODOLOGY.md`](../../docs/METHODOLOGY.md). Added retrospectively; the
+gate post-dates this plan.*
+
+- [x] **Secrets / injection / crypto / supply-chain** — N/A; the role is a pure,
+      read-only grouping over the finding store. No untrusted input handling.
+- [x] **Safe file handling** — the variant report is written only to a
+      sandbox-writable path via `atomic_write_json`; the target is never touched.
+- [x] **Pre-merge review** — covered by the engine-wide CodeGuard review,
+      verdict CLEAN ([`docs/security-review.md`](../../docs/security-review.md),
+      2026-06-24).
+
 ## Project Structure
 ```text
 hello_spec/foundry/
