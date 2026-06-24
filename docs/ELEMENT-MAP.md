@@ -33,7 +33,9 @@ Spec: [`specs/003-rule-gap-flywheel/`](../specs/003-rule-gap-flywheel/). Four
 roles are fully implemented via the spec-kit workflow:
 - **Remediator (§6.4)** — `roles/extensions/remediator.py` (+ `foundry/remediation.py`):
   proposes a candidate fix per confirmed true-positive and **verifies** it against
-  an isolated copy before labelling it `verified`. Spec:
+  an isolated copy before labelling it `verified`. Dual-mode (research D1): in
+  cli/api the **model proposes the patch**; in stub (and as fallback) the secure-
+  twin template is used — both verified by the same re-scan. Spec:
   [`specs/001-remediator-role/`](../specs/001-remediator-role/).
 - **Variant-Hunter (§6.2)** — `roles/extensions/variant_hunter.py`: turns each
   confirmed true-positive into leads for siblings sharing its weakness class
