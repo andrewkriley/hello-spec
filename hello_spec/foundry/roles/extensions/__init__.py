@@ -32,14 +32,4 @@ class AttackMapper(Role):
 from .remediator import Remediator   # §6.4 — fully implemented extension role
 
 
-class SelfImprover(Role):
-    name = "self-improver"
-
-    def propose_rules(self, rule_gaps, tick: int) -> List[str]:
-        """§6.5 — turn each rule-gap entry into a proposed new detection rule.
-        This is the flywheel: exploratory lessons become reusable rules."""
-        self.heartbeat()
-        proposals = [
-            f"propose rule for {g.weakness_class}: {g.pattern}" for g in rule_gaps]
-        self.emit(tick, "self-improve", f"proposed {len(proposals)} new rule(s)")
-        return proposals
+from .self_improver import SelfImprover   # §6.5 — authors + verifies real rules

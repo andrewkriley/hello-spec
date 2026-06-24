@@ -76,12 +76,25 @@ def _m_hardcoded_secret_fn(fn: FuncInfo) -> Optional[str]:
     return None
 
 
+def _m_timing_unsafe_compare(fn: FuncInfo) -> Optional[str]:
+    # Promoted from the exploratory hunter so an authored rule can reference it
+    # (the rule-gap flywheel, §6.5). Not referenced by any committed rule, so the
+    # normal sweep still leaves CWE-208 to exploration until a rule is accepted.
+    src = fn.source.lower()
+    if fn.name.startswith(("check", "verify")) and "==" in fn.source \
+            and ("token" in src or "secret" in src) \
+            and "compare_digest" not in src and "hmac" not in src:
+        return "secret/token compared with == (non-constant-time)"
+    return None
+
+
 MATCHERS: Dict[str, Callable[[FuncInfo], Optional[str]]] = {
     "sql_string_format": _m_sql_string_format,
     "shell_injection": _m_shell_injection,
     "idor_no_authz": _m_idor_no_authz,
     "path_traversal": _m_path_traversal,
     "hardcoded_secret_fn": _m_hardcoded_secret_fn,
+    "timing_unsafe_compare": _m_timing_unsafe_compare,
 }
 
 # Tiny known-vulnerable dependency table (FR-038 stand-in).
@@ -239,20 +252,12 @@ class Detector(Role):
     def _explore(self, index, rules, store, result) -> None:
         covered = {r.weakness_class for r in rules}
         for fn in index.all():
-            src = fn.source.lower()
-            looks_like_secret_check = (
-                fn.name.startswith(("check", "verify"))
-                and "==" in fn.source
-                and ("token" in src or "secret" in src)
-                and "compare_digest" not in src
-                and "hmac" not in src
-            )
-            if looks_like_secret_check:
+            note = _m_timing_unsafe_compare(fn)     # the promoted matcher
+            if note:
                 f = Finding(
                     path=fn.file, symbol=fn.name, weakness_class="CWE-208",
                     title=f"Timing-unsafe comparison in {fn.name}",
-                    description="secret compared with == (non-constant-time)",
-                    technique="exploratory")
+                    description=note, technique="exploratory")
                 if store.upsert(f):
                     result.candidates.append(f)
                     if "CWE-208" not in covered:        # FR-042 rule-gap
