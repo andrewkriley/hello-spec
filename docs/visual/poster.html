@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hello-spec — one-page poster</title>
+<style>
+  @page{ size:A4 portrait; margin:0 }
+  :root{
+    --ink:#23303a; --soft:#5b6b78; --line:#e7ddcf; --bg:#fbf7f0; --card:#fff;
+    --guard:#1f9c8b; --guard-bg:#e3f5f1;
+    --foundry:#e8893b; --foundry-bg:#fcecdd;
+    --demo:#3f7fd6; --demo-bg:#e4eefb;
+    --stamp:#3aa76d; --stamp-bg:#e4f4ea;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{background:var(--bg)}
+  body{
+    width:210mm; min-height:297mm; padding:14mm 14mm 12mm;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+  .kick{color:var(--foundry); font-weight:800; letter-spacing:.16em;
+    text-transform:uppercase; font-size:11px}
+  h1{font-size:34px; line-height:1.08; margin:4px 0 6px}
+  .sub{font-size:15px; color:var(--soft); max-width:165mm}
+  .analogy{margin-top:11px; background:var(--card); border:1px solid var(--line);
+    border-radius:14px; padding:12px 15px; font-size:13.5px}
+  .analogy b.g{color:var(--guard)} .analogy b.f{color:var(--foundry)} .analogy b.d{color:var(--demo)}
+  .sec{margin-top:16px}
+  .eyebrow{font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    font-size:10px; color:var(--soft); margin-bottom:8px}
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:11px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px}
+  .card .ico{width:42px; height:42px; border-radius:11px; display:flex;
+    align-items:center; justify-content:center; margin-bottom:8px}
+  .g .ico{background:var(--guard-bg)} .f .ico{background:var(--foundry-bg)} .d .ico{background:var(--demo-bg)}
+  .tag{font-size:11px; font-weight:800}
+  .g .tag{color:var(--guard)} .f .tag{color:var(--foundry)} .d .tag{color:var(--demo)}
+  .card h3{font-size:15px; margin:2px 0 3px}
+  .card p{font-size:11.5px; color:var(--soft); line-height:1.45}
+  .strip{display:grid; grid-template-columns:repeat(6,1fr); gap:7px}
+  .step{background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:10px 7px; text-align:center; position:relative}
+  .step .n{width:24px; height:24px; border-radius:50%; background:var(--demo-bg);
+    color:var(--demo); font-weight:800; font-size:12px; display:flex;
+    align-items:center; justify-content:center; margin:0 auto 6px}
+  .step h4{font-size:12px; margin-bottom:2px}
+  .step p{font-size:9.5px; color:var(--soft); line-height:1.3}
+  .step:not(:last-child)::after{content:"\2192"; position:absolute; right:-7px; top:50%;
+    transform:translateY(-50%); color:var(--line); font-size:15px; z-index:2}
+  .callout{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:14px}
+  .panel{border-radius:14px; padding:13px 15px; border:1px solid var(--line)}
+  .panel.guard{background:var(--guard-bg)} .panel.foundry{background:var(--foundry-bg)}
+  .panel .h{font-weight:800; font-size:13px; margin-bottom:5px}
+  .panel.guard .h{color:var(--guard)} .panel.foundry .h{color:var(--foundry)}
+  .panel ul{list-style:none; font-size:11.5px; color:var(--ink)}
+  .panel li{padding:3px 0 3px 16px; position:relative}
+  .panel li::before{content:"●"; position:absolute; left:0; font-size:8px; top:5px}
+  .panel.guard li::before{color:var(--guard)} .panel.foundry li::before{color:var(--foundry)}
+  .stamp{margin-top:16px; display:flex; align-items:center; gap:14px;
+    background:var(--stamp-bg); border:2px dashed var(--stamp); border-radius:16px; padding:14px 18px}
+  .stamp .seal{flex:0 0 auto; width:66px; height:66px; border-radius:50%;
+    border:3px solid var(--stamp); color:var(--stamp); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; font-weight:800; text-align:center;
+    font-size:9px; letter-spacing:.04em; transform:rotate(-8deg)}
+  .stamp .seal b{font-size:14px}
+  .stamp .txt b{font-size:15px; color:var(--stamp)}
+  .stamp .txt p{font-size:12px; color:var(--soft)}
+  .foot{margin-top:14px; font-size:10.5px; color:var(--soft); display:flex;
+    justify-content:space-between; border-top:1px solid var(--line); padding-top:9px}
+</style>
+</head>
+<body>
+
+  <div class="kick">hello-spec · explained without the jargon</div>
+  <h1>Teaching computers to check code safely</h1>
+  <div class="sub">A small, working demo that combines two open security standards
+    — and shows how to make an AI <b>prove its work</b> before anyone trusts it.</div>
+
+  <div class="analogy">🏠 <b>Like a building inspection:</b> the
+    <b class="g">building code</b> is the rulebook of what's safe; a
+    <b class="f">trustworthy inspector</b> never guesses, always shows evidence, gets
+    a second opinion, and leaves the owner in charge; <b class="d">hello-spec</b> is
+    the model house we walk through to see it work.</div>
+
+  <div class="sec">
+    <div class="eyebrow">Three pieces fit together</div>
+    <div class="three">
+      <div class="card g">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1f9c8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M17 6h3v14H8"/><path d="M7 8h6M7 11h6"/></svg></div>
+        <div class="tag">PROJECT CODEGUARD</div>
+        <h3>The building code</h3>
+        <p>A shared rulebook of safe-coding practices. Knowledge, written down.</p>
+      </div>
+      <div class="card f">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8893b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <div class="tag">FOUNDRY SECURITY SPEC</div>
+        <h3>The trustworthy inspector</h3>
+        <p>A blueprint for an AI that only reports problems it can <b>prove</b>.</p>
+      </div>
+      <div class="card d">
+        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3f7fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+        <div class="tag">HELLO-SPEC</div>
+        <h3>The model house</h3>
+        <p>A tiny demo that runs both on a flawed program — and a safe twin.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="eyebrow">The life of a finding — every problem must survive these steps</div>
+    <div class="strip">
+      <div class="step"><div class="n">1</div><h4>Spot</h4><p>Notices something risky</p></div>
+      <div class="step"><div class="n">2</div><h4>Prove</h4><p>Points to the evidence</p></div>
+      <div class="step"><div class="n">3</div><h4>Confirm</h4><p>A 2nd checker agrees</p></div>
+      <div class="step"><div class="n">4</div><h4>Write up</h4><p>Only proven ones</p></div>
+      <div class="step"><div class="n">5</div><h4>Propose</h4><p>A tested fix</p></div>
+      <div class="step"><div class="n">6</div><h4>You decide</h4><p>Nothing auto-changes</p></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="panel guard">
+      <div class="h">● From CodeGuard — the rules</div>
+      <ul>
+        <li>Safe-coding rules in CodeGuard's own format</li>
+        <li>Checked &amp; packaged by CodeGuard's real tools</li>
+        <li>The fixes apply CodeGuard's safe practices</li>
+      </ul>
+    </div>
+    <div class="panel foundry">
+      <div class="h">● From Foundry — the inspector</div>
+      <ul>
+        <li>A team of specialist inspectors</li>
+        <li>"Prove it" before anything is called real</li>
+        <li>An independent second inspector confirms</li>
+        <li>11 trust rules it must always obey</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stamp">
+    <div class="seal"><b>✓</b>VERIFIED<br>HELLO-SPEC</div>
+    <div class="txt">
+      <b>Every finding proven · Independent re-check · Human in control</b>
+      <p>The cleverness of AI, harnessed — and only believed when it can show the proof.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>A learning project combining Project CodeGuard + the Foundry Security Spec.</span>
+    <span>The inspected program is a teaching example with deliberate flaws — not a real product.</span>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hello-spec — explained simply</title>
+<style>
+  :root{
+    --ink:#23303a; --soft:#5b6b78; --line:#e7ddcf;
+    --bg:#fbf7f0; --card:#ffffff;
+    --guard:#1f9c8b;      /* CodeGuard teal  */
+    --guard-bg:#e3f5f1;
+    --foundry:#e8893b;    /* Foundry amber   */
+    --foundry-bg:#fcecdd;
+    --demo:#3f7fd6;       /* hello-spec blue */
+    --demo-bg:#e4eefb;
+    --stamp:#3aa76d;      /* approved green  */
+    --stamp-bg:#e4f4ea;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px; margin:0 auto; padding:0 22px}
+  h1,h2,h3{line-height:1.2; color:var(--ink)}
+  h1{font-size:2.6rem; margin:.2em 0}
+  h2{font-size:1.7rem; margin:.2em 0}
+  p{font-size:1.08rem}
+  .lead{font-size:1.25rem; color:var(--soft)}
+  .muted{color:var(--soft)}
+  .pill{display:inline-block; font-size:.8rem; font-weight:700; letter-spacing:.04em;
+        text-transform:uppercase; padding:4px 11px; border-radius:999px}
+  /* hero */
+  header.hero{padding:64px 0 36px; text-align:center;
+    background:radial-gradient(1200px 380px at 50% -120px,#fff6e6 0,var(--bg) 70%)}
+  .hero .kick{color:var(--foundry); font-weight:800; letter-spacing:.14em;
+    text-transform:uppercase; font-size:.85rem}
+  .hero .lead{max-width:680px; margin:14px auto 0}
+  .analogy{max-width:720px; margin:26px auto 0; background:var(--card);
+    border:1px solid var(--line); border-radius:18px; padding:18px 22px;
+    box-shadow:0 10px 30px rgba(60,40,10,.06); font-size:1.05rem}
+  .analogy b{color:var(--ink)}
+  section{padding:46px 0}
+  section + section{border-top:1px solid var(--line)}
+  .eyebrow{font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+    font-size:.78rem; color:var(--soft); margin-bottom:6px}
+  /* three pieces */
+  .three{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:24px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:18px;
+    padding:22px; box-shadow:0 8px 24px rgba(60,40,10,.05)}
+  .card .ico{width:58px; height:58px; border-radius:14px; display:flex;
+    align-items:center; justify-content:center; margin-bottom:12px}
+  .card h3{margin:.1em 0 .2em; font-size:1.18rem}
+  .card .tag{font-size:.82rem; font-weight:700}
+  .g .ico{background:var(--guard-bg)} .g .tag{color:var(--guard)}
+  .f .ico{background:var(--foundry-bg)} .f .tag{color:var(--foundry)}
+  .d .ico{background:var(--demo-bg)} .d .tag{color:var(--demo)}
+  /* alignment */
+  .twocol{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:20px}
+  .panel{border-radius:18px; padding:22px; border:1px solid var(--line)}
+  .panel.guard{background:var(--guard-bg)}
+  .panel.foundry{background:var(--foundry-bg)}
+  .panel h3{display:flex; align-items:center; gap:10px; margin-top:0}
+  .panel ul{margin:.4em 0 0; padding-left:0; list-style:none}
+  .panel li{position:relative; padding:7px 0 7px 28px; border-top:1px solid rgba(0,0,0,.06)}
+  .panel li:first-child{border-top:none}
+  .panel li::before{content:""; position:absolute; left:2px; top:13px; width:14px;
+    height:14px; border-radius:50%; background:#fff; border:3px solid currentColor}
+  .panel.guard li{color:var(--guard)} .panel.foundry li{color:var(--foundry)}
+  .panel li span{color:var(--ink); font-weight:500}
+  table.map{width:100%; border-collapse:collapse; margin-top:22px; background:var(--card);
+    border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  table.map th,table.map td{text-align:left; padding:12px 14px; font-size:1rem;
+    border-bottom:1px solid var(--line)}
+  table.map th{background:#fff; font-size:.8rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--soft)}
+  table.map tr:last-child td{border-bottom:none}
+  .src{font-weight:700; white-space:nowrap}
+  .src.guard{color:var(--guard)} .src.foundry{color:var(--foundry)}
+  /* journey strip */
+  .strip{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:24px}
+  .step{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:16px 12px; text-align:center; position:relative}
+  .step .n{width:30px; height:30px; border-radius:50%; background:var(--demo-bg);
+    color:var(--demo); font-weight:800; display:flex; align-items:center;
+    justify-content:center; margin:0 auto 8px}
+  .step h4{margin:.2em 0 .3em; font-size:1rem}
+  .step p{font-size:.86rem; color:var(--soft); margin:0}
+  .step:not(:last-child)::after{content:"\2192"; position:absolute; right:-12px;
+    top:50%; transform:translateY(-50%); color:var(--line); font-size:1.5rem; z-index:2}
+  /* go-deeper */
+  details{background:var(--card); border:1px solid var(--line); border-radius:16px;
+    margin-top:16px; overflow:hidden}
+  details[open]{box-shadow:0 8px 24px rgba(60,40,10,.05)}
+  summary{cursor:pointer; list-style:none; padding:18px 22px; font-weight:700;
+    font-size:1.15rem; display:flex; align-items:center; gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary .chev{margin-left:auto; transition:transform .2s; color:var(--soft)}
+  details[open] summary .chev{transform:rotate(90deg)}
+  summary .badge{font-size:.7rem; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--foundry); background:var(--foundry-bg);
+    padding:3px 9px; border-radius:999px}
+  .body{padding:0 22px 22px}
+  .guards{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .guard-item{display:flex; gap:12px; align-items:flex-start; background:var(--stamp-bg);
+    border-radius:12px; padding:14px}
+  .guard-item .tick{flex:0 0 auto; color:var(--stamp)}
+  .guard-item b{display:block}
+  .flow{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:6px}
+  .chip{background:var(--demo-bg); color:var(--demo); font-weight:700; border-radius:10px;
+    padding:8px 12px; font-size:.92rem}
+  .flow .arr{color:var(--line); font-size:1.2rem}
+  .leash{display:flex; gap:16px; align-items:center; background:var(--foundry-bg);
+    border-radius:14px; padding:18px}
+  footer{padding:40px 0 60px; color:var(--soft); font-size:.95rem}
+  .note{background:#fff; border:1px dashed var(--line); border-radius:14px; padding:16px 18px}
+  a{color:var(--demo)}
+  @media(max-width:760px){
+    .three,.twocol,.strip,.guards{grid-template-columns:1fr}
+    .step:not(:last-child)::after{content:"\2193"; right:50%; top:auto; bottom:-13px; transform:translateX(50%)}
+    h1{font-size:2rem}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kick">hello-spec · explained without the jargon</div>
+    <h1>Teaching computers to check code&nbsp;safely</h1>
+    <p class="lead">A small, working demonstration that brings together two open
+      security standards — and shows how to make an AI <b>prove its work</b>.</p>
+    <div class="analogy">
+      🏠 Think of it like a <b>building inspection</b>.
+      One standard is the <b style="color:var(--guard)">building code</b> — the rulebook of what's safe.
+      The other is how a <b style="color:var(--foundry)">trustworthy inspector</b> works — never guessing,
+      always showing evidence, getting a second opinion, and leaving the owner in charge.
+      <b style="color:var(--demo)">hello-spec</b> is a model house we walk through to see it all in action.
+    </div>
+  </div>
+</header>
+
+<!-- THE THREE PIECES -->
+<section><div class="wrap">
+  <div class="eyebrow">The big picture</div>
+  <h2>Three pieces fit together</h2>
+  <div class="three">
+    <div class="card g">
+      <div class="ico">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1f9c8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M17 6h3v14H8"/><path d="M7 8h6M7 11h6M7 14h4"/></svg>
+      </div>
+      <div class="tag">Project CodeGuard</div>
+      <h3>The building code</h3>
+      <p class="muted">A shared rulebook of safe-coding practices — "don't do it
+        this risky way, do it this safe way." It's knowledge, written down.</p>
+    </div>
+    <div class="card f">
+      <div class="ico">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e8893b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6M11 8v6" opacity=".5"/></svg>
+      </div>
+      <div class="tag">Foundry Security Spec</div>
+      <h3>The trustworthy inspector</h3>
+      <p class="muted">A blueprint for an AI that hunts for security problems —
+        and only reports the ones it can <b>prove</b>, so you can trust the result.</p>
+    </div>
+    <div class="card d">
+      <div class="ico">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3f7fd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+      </div>
+      <div class="tag">hello-spec</div>
+      <h3>The model house</h3>
+      <p class="muted">A tiny working demo that runs both: it inspects a small
+        program built with deliberate flaws — and a safe twin with none.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ALIGNMENT (REQUIRED) -->
+<section><div class="wrap">
+  <div class="eyebrow">How it lines up</div>
+  <h2>What we took from each standard</h2>
+  <p class="muted" style="max-width:720px">This is the heart of the project: it
+    doesn't reinvent anything — it <b>combines two existing standards</b>. The
+    rulebook comes from one; the trustworthy-inspector design comes from the other.</p>
+  <div class="twocol">
+    <div class="panel guard">
+      <h3><span class="pill" style="background:#fff;color:var(--guard)">CodeGuard</span> the rules</h3>
+      <ul>
+        <li><span>Safe-coding rules written in CodeGuard's own format</span></li>
+        <li><span>Checked &amp; packaged by CodeGuard's real tools</span></li>
+        <li><span>The fixes apply CodeGuard's recommended safe practices</span></li>
+      </ul>
+    </div>
+    <div class="panel foundry">
+      <h3><span class="pill" style="background:#fff;color:var(--foundry)">Foundry</span> the inspector</h3>
+      <ul>
+        <li><span>A team of specialist inspectors, each with one job</span></li>
+        <li><span>The evidence rule: a problem is only "real" once proven</span></li>
+        <li><span>An independent second inspector confirms a genuine break</span></li>
+        <li><span>A written "constitution" of 11 trust rules it must obey</span></li>
+        <li><span>It proposes fixes, but never changes anything itself</span></li>
+      </ul>
+    </div>
+  </div>
+  <table class="map">
+    <tr><th>In the demo, this part…</th><th>…comes from</th></tr>
+    <tr><td>The list of "what's risky vs. safe"</td><td class="src guard">CodeGuard</td></tr>
+    <tr><td>The inspectors that read the code and judge it</td><td class="src foundry">Foundry</td></tr>
+    <tr><td>"Show me the evidence" before anything is called real</td><td class="src foundry">Foundry</td></tr>
+    <tr><td>The recommended way to fix each problem</td><td class="src guard">CodeGuard</td></tr>
+    <tr><td>Proposing a fix, but leaving you in control</td><td class="src foundry">Foundry</td></tr>
+  </table>
+</div></section>
+
+<!-- LAYER: LIFE OF A FINDING -->
+<section><div class="wrap">
+  <div class="eyebrow">Go deeper · the core idea</div>
+  <h2>The life of a finding</h2>
+  <p class="muted" style="max-width:720px">Why can you trust what the inspector
+    says? Because every problem has to survive these six steps before a human ever sees it.</p>
+  <div class="strip">
+    <div class="step"><div class="n">1</div><h4>Spot</h4><p>An inspector notices something that looks risky.</p></div>
+    <div class="step"><div class="n">2</div><h4>Prove</h4><p>It must point to the exact evidence in the code.</p></div>
+    <div class="step"><div class="n">3</div><h4>Confirm</h4><p>A different inspector independently re-checks it.</p></div>
+    <div class="step"><div class="n">4</div><h4>Write up</h4><p>Only proven problems get written down.</p></div>
+    <div class="step"><div class="n">5</div><h4>Propose</h4><p>A suggested fix is drafted — and tested.</p></div>
+    <div class="step"><div class="n">6</div><h4>You decide</h4><p>Nothing changes unless a person says so.</p></div>
+  </div>
+</div></section>
+
+<!-- DEEPER LAYERS (collapsible) -->
+<section><div class="wrap">
+  <div class="eyebrow">Optional · open if you're curious</div>
+  <h2>Three more things worth knowing</h2>
+
+  <details>
+    <summary>🛡️ What keeps it honest <span class="badge">trust</span> <span class="chev">▸</span></summary>
+    <div class="body">
+      <p class="muted">The inspector follows a written "constitution." A few of its
+        rules, in plain language:</p>
+      <div class="guards">
+        <div class="guard-item"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><div><b>No claim without proof.</b> A confident-sounding answer isn't enough — the evidence has to check out.</div></div>
+        <div class="guard-item"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><div><b>Only a fresh checker confirms a break.</b> The one who found it can't also be the one who "verifies" it.</div></div>
+        <div class="guard-item"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><div><b>The human outranks the machine.</b> People can overrule any automated decision, and it's recorded.</div></div>
+        <div class="guard-item"><span class="tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><div><b>Nothing changes without permission.</b> Fixes are proposed for review — never applied behind your back.</div></div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>📐 How it was built <span class="badge">process</span> <span class="chev">▸</span></summary>
+    <div class="body">
+      <p class="muted">It wasn't just coded ad-hoc. It followed a disciplined,
+        write-it-down-first process — and the newest part (the fix-proposer) was
+        built entirely this way:</p>
+      <div class="flow">
+        <span class="chip">Agree the rules</span><span class="arr">→</span>
+        <span class="chip">Write the spec</span><span class="arr">→</span>
+        <span class="chip">Plan it</span><span class="arr">→</span>
+        <span class="chip">Break into tasks</span><span class="arr">→</span>
+        <span class="chip">Build</span><span class="arr">→</span>
+        <span class="chip">Check against the constitution</span>
+      </div>
+      <p class="muted" style="margin-top:14px">Every step is checked against the
+        project's own "constitution," so the build can't quietly drift away from
+        its own principles.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>🤖 A real AI, kept on a leash <span class="badge">why it matters</span> <span class="chev">▸</span></summary>
+    <div class="body">
+      <div class="leash">
+        <div style="font-size:2.2rem">🤖🔗</div>
+        <p style="margin:0">A genuine AI model does the clever judging here — but
+          it's only <b>believed when it can point to proof</b>. That's the whole
+          idea: harness the cleverness, don't trust it blindly. The same machinery
+          works with the AI switched off (using fixed rules), so its behaviour can
+          always be checked.</p>
+      </div>
+    </div>
+  </details>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="note">
+    <b>Is this real?</b> The machinery is real and runs end-to-end. The program it
+    inspects is a tiny <i>teaching example</i> with deliberate flaws (and a safe
+    twin) — not a real product. The point is to <b>show the pattern</b>: rules you
+    can trust, an inspector that proves its work, and a human always in charge.
+  </div>
+  <p style="margin-top:18px">hello-spec · a learning project bringing together
+    <b style="color:var(--guard)">Project CodeGuard</b> and the
+    <b style="color:var(--foundry)">Foundry Security Spec</b>.</p>
+</div></footer>
+
+</body>
+</html>
