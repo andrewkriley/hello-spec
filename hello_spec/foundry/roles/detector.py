@@ -17,6 +17,7 @@ call; here they are checkable Python so the demo is reproducible (NFR-004).
 """
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -111,20 +112,22 @@ class Detector(Role):
 
         # FR-037: rule sweep, function-by-function (module-level vars are not
         # functions; module-scope secrets are handled by the secret scanner).
+        # Two modes share the same candidate-creation path:
+        #   stub  -> deterministic matchers (reproducible; used by tests, NFR-004)
+        #   cli/api -> the model evaluates the rules against each function, one
+        #              call per function (FR-037 "LLM-evaluated detection rules").
+        use_llm = self.llm.backend in ("cli", "api")
         for fn in index.all():
             if fn.is_module_var:
                 continue
-            for rule in rules:
-                matcher = MATCHERS.get(rule.matcher)
-                if not matcher:
-                    continue
-                note = matcher(fn)
-                if note:
-                    self._add(store, result, Finding(
-                        path=fn.file, symbol=fn.name,
-                        weakness_class=rule.weakness_class,
-                        title=f"{rule.weakness_class} in {fn.name}",
-                        description=note, technique=f"rule:{rule.id}"))
+            hits = (self._llm_sweep(fn, rules) if use_llm
+                    else self._deterministic_sweep(fn, rules))
+            for rule, note in hits:
+                self._add(store, result, Finding(
+                    path=fn.file, symbol=fn.name,
+                    weakness_class=rule.weakness_class,
+                    title=f"{rule.weakness_class} in {fn.name}",
+                    description=note, technique=f"rule:{rule.id}"))
 
         # FR-039: secret scanning at module scope (not inside a function).
         self._secret_scan(target_dir, store, result)
@@ -141,6 +144,69 @@ class Detector(Role):
     def _add(self, store, result, finding) -> None:
         if store.upsert(finding):              # FR-045 dedup by fingerprint
             result.candidates.append(finding)
+
+    # -- rule sweep modes --------------------------------------------------
+    def _deterministic_sweep(self, fn, rules):
+        """Stub mode: run each rule's checkable matcher. Returns [(rule, note)]."""
+        hits = []
+        for rule in rules:
+            matcher = MATCHERS.get(rule.matcher)
+            note = matcher(fn) if matcher else None
+            if note:
+                hits.append((rule, note))
+        return hits
+
+    def _llm_sweep(self, fn, rules):
+        """cli/api mode: one model call evaluates ALL candidate rules against this
+        function and returns which genuinely apply. Falls back to the
+        deterministic matchers on any model/parse error so a flaky call never
+        drops a function silently."""
+        by_id = {r.id: r for r in rules}
+        catalogue = "\n".join(
+            f"- {r.id} ({r.weakness_class}): {r.description}" for r in rules)
+        prompt = (
+            f"Function `{fn.name}` in {fn.file}:\n```python\n{fn.source}\n```\n\n"
+            f"Candidate weakness rules:\n{catalogue}\n\n"
+            "Decide which rules GENUINELY apply to THIS function (the function "
+            "actually exhibits that weakness). Be precise; do not flag a rule "
+            "that does not apply. Respond with ONLY a JSON array: "
+            '[{"id":"<rule id>","note":"<=12 words why"}]. Empty [] if none.')
+        try:
+            raw = self.llm.complete(
+                self.name,
+                "You are a precise security code detector. Output only JSON.",
+                prompt)
+            data = self._parse_json_array(raw)
+            if data is None:
+                self.log.discarded(f"llm-detect:{fn.name}", "unparseable response")
+                return self._deterministic_sweep(fn, rules)
+            hits = []
+            for item in data:
+                rule = by_id.get(str(item.get("id", "")).strip())
+                if rule:
+                    hits.append((rule, str(item.get("note", ""))[:120]))
+            return hits
+        except Exception as exc:               # never crash the fleet on one call
+            self.log.discarded(f"llm-detect:{fn.name}", f"error: {exc}")
+            return self._deterministic_sweep(fn, rules)
+
+    @staticmethod
+    def _parse_json_array(raw: str):
+        txt = raw.strip()
+        if txt.startswith("```"):
+            txt = re.sub(r"^```[a-zA-Z]*\n?", "", txt).rstrip("`").strip()
+        try:
+            out = json.loads(txt)
+        except Exception:
+            i, j = txt.find("["), txt.rfind("]")
+            if 0 <= i < j:
+                try:
+                    out = json.loads(txt[i:j + 1])
+                except Exception:
+                    return None
+            else:
+                return None
+        return out if isinstance(out, list) else None
 
     def _secret_scan(self, target_dir, store, result) -> None:
         for py in sorted(Path(target_dir).rglob("*.py")):
