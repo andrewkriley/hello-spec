@@ -25,8 +25,7 @@ class DeepTester(Role):
 from .variant_hunter import VariantHunter   # §6.2 — fully implemented extension role
 
 
-class AttackMapper(Role):
-    name = "attack-mapper"
+from .attack_mapper import AttackMapper   # §6.3 — fully implemented extension role
 
 
 from .remediator import Remediator   # §6.4 — fully implemented extension role

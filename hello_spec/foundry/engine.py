@@ -27,7 +27,8 @@ from .observability.session_log import SessionLog
 from .roles.cartographer import Cartographer
 from .roles.coverage_guide import CoverageGuide
 from .roles.detector import Detector
-from .roles.extensions import Remediator, SelfImprover, VariantHunter
+from .roles.extensions import (AttackMapper, Remediator, SelfImprover,
+                               VariantHunter)
 from .roles.indexer import Indexer
 from .roles.orchestrator import Orchestrator
 from .roles.reporter import Reporter
@@ -172,6 +173,12 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         variant_hunter = role(VariantHunter, "variant-hunter")
         variants = variant_hunter.hunt(store, sandbox, reports_dir, tick)
 
+    # §6.3 Attack-Mapper (opt-in extension): chain findings into attack paths.
+    attack_paths = []
+    if cfg.section("fleet").get("attack_mapper", {}).get("enabled"):
+        attack_mapper = role(AttackMapper, "attack-mapper")
+        attack_paths = attack_mapper.map_attacks(store, sandbox, reports_dir, tick)
+
     store.persist()
     log.record(event="status", **orch.status(store))
     log.persist()
@@ -194,6 +201,7 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         "rule_proposals": [p.to_dict() for p in proposals],
         "remediations": [c.to_dict() for c in remediations],
         "variants": [v.to_dict() for v in variants],
+        "attack_paths": [p.to_dict() for p in attack_paths],
         "coverage_complete": cov.complete,
         "auto_stop": auto_stop,
         "security_map": {
@@ -236,6 +244,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         for v in result["variants"]:
             print(f"  {v['weakness_class']:<8} also at {v['location']} "
                   f"[{v['verdict']}]")
+    if result.get("attack_paths"):
+        print("\n--- attack-mapper chains (foothold → impact) ---")
+        for p in result["attack_paths"]:
+            print(f"  {p['entry_class']} ({p['entry_location']}) → "
+                  f"{p['impact_class']} ({p['impact_location']})")
     return 0
 
 
