@@ -29,7 +29,7 @@ detection→prevention flywheel: for each rule-gap it **authors a real, validato
 passing CodeGuard rule** (`roles/extensions/self_improver.py` + `foundry/
 rule_authoring.py`) and **verifies** it catches the class on a re-scan; proposals
 are written for human acceptance, the committed `rules/` corpus is never modified.
-Spec: [`specs/003-rule-gap-flywheel/`](../specs/003-rule-gap-flywheel/). Three
+Spec: [`specs/003-rule-gap-flywheel/`](../specs/003-rule-gap-flywheel/). Four
 roles are fully implemented via the spec-kit workflow:
 - **Remediator (§6.4)** — `roles/extensions/remediator.py` (+ `foundry/remediation.py`):
   proposes a candidate fix per confirmed true-positive and **verifies** it against
@@ -39,8 +39,13 @@ roles are fully implemented via the spec-kit workflow:
   confirmed true-positive into leads for siblings sharing its weakness class
   (including out-of-scope ones). Spec:
   [`specs/002-variant-hunter/`](../specs/002-variant-hunter/).
+- **Attack-Mapper (§6.3)** — `roles/extensions/attack_mapper.py`: chains confirmed
+  findings into attack paths (a foothold like a hardcoded credential → an impact
+  like remote code execution). Spec:
+  [`specs/004-attack-mapper/`](../specs/004-attack-mapper/).
 
-Deep-Tester (§6.1) and Attack-Mapper (§6.3) remain stubs.
+Only **Deep-Tester (§6.1)** (input-generation / fuzzing) remains a stub — it needs
+a richer target than the demo's tiny module to be meaningful.
 
 ## Foundry — finding lifecycle (spec §7)
 

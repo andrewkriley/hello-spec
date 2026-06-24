@@ -227,3 +227,29 @@ class RuleProposal:
             "verified": self.verified,
             "path": self.path,
         }
+
+
+@dataclass
+class AttackPath:
+    """A chain from a foothold finding to an impact finding (Attack-Mapper, §6.3).
+    A lead for a human — built only from already-confirmed findings (Constitution
+    II); the mapper invents nothing and changes nothing (Constitution X)."""
+
+    entry_class: str
+    entry_location: str
+    entry_fingerprint: str
+    impact_class: str
+    impact_location: str
+    impact_fingerprint: str
+    narrative: str
+
+    def to_dict(self) -> dict:
+        return {
+            "entry_class": self.entry_class,
+            "entry_location": self.entry_location,
+            "entry_fingerprint": self.entry_fingerprint,
+            "impact_class": self.impact_class,
+            "impact_location": self.impact_location,
+            "impact_fingerprint": self.impact_fingerprint,
+            "narrative": self.narrative,
+        }

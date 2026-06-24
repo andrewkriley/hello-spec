@@ -45,6 +45,8 @@ fleet:                              # per-role instance counts + session limits
     reference_dir: ../target/secure   # secure twin = the control end-state per class
   variant_hunter:                  # §6.2 extension role (opt-in)
     enabled: true
+  attack_mapper:                   # §6.3 extension role (opt-in)
+    enabled: true
 
 sandbox:                            # enforced by infrastructure (Constitution IX)
   egress_allowlist:
