@@ -3,15 +3,22 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version: 1.0.0 (initial adoption)
+Version: 1.0.0 → 1.0.0 (no principle change; consistency propagation only)
+Bump rationale: PATCH-level alignment with no MAJOR/MINOR change — the eleven
+        principles are unchanged; only the dependent plan template was made
+        concrete, so the version is held at 1.0.0 (initial ratification).
 Source: adopts the Foundry Security Spec constitution v0.2.0 in intent
         (foundry-security-spec/constitution.md). hello-spec is a teaching
         implementation governed by those principles.
-Principles: I–XI (the Foundry seed's eleven inviolable principles).
-Templates reviewed: .specify/templates/{plan,spec,tasks}-template.md — no change
-        required; /speckit-analyze checks plans/tasks against the principles below.
+Principles: I–XI (the Foundry seed's eleven inviolable principles) — unchanged.
+Templates:
+  ✅ .specify/templates/plan-template.md — "Constitution Check" gate replaced the
+        generic placeholder with concrete gates for all 11 principles.
+  ✅ .specify/templates/spec-template.md — no change required.
+  ✅ .specify/templates/tasks-template.md — no change required.
 Downstream: README.md, docs/ELEMENT-MAP.md (principle → enforcing file map),
-        tests/test_principles.py (one test per principle).
+        tests/test_principles.py (one test per principle) — all consistent.
+Deferred TODOs: none.
 -->
 
 ## Purpose

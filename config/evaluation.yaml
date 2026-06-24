@@ -40,6 +40,9 @@ fleet:                              # per-role instance counts + session limits
   validator: {instances: 1}
   coverage_guide: {instances: 1}
   reporter: {instances: 1}
+  remediator:                      # §6.4 extension role (opt-in)
+    enabled: true
+    reference_dir: ../target/secure   # secure twin = the control end-state per class
 
 sandbox:                            # enforced by infrastructure (Constitution IX)
   egress_allowlist:

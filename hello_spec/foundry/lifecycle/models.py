@@ -126,3 +126,57 @@ class Finding:
                 for leg in self.evidence.legs()
             },
         }
+
+
+class RemediationStatus(enum.Enum):
+    """Status of a candidate remediation (Remediator role, spec §6.4)."""
+
+    VERIFIED = "verified"        # patch re-scanned clean (finding closed, no new)
+    UNVERIFIED = "unverified"    # could not demonstrate the fix
+    NO_CONTROL = "no-control"    # no mapped secure control for this class
+
+
+@dataclass
+class VerificationResult:
+    """Outcome of checking a candidate against an isolated patched copy."""
+
+    finding_closed: bool
+    new_findings: int
+
+    @property
+    def passed(self) -> bool:
+        return self.finding_closed and self.new_findings == 0
+
+    def to_dict(self) -> dict:
+        return {"finding_closed": self.finding_closed,
+                "new_findings": self.new_findings, "passed": self.passed}
+
+
+@dataclass
+class CandidateRemediation:
+    """A proposed, verified-or-not fix for exactly one confirmed finding (§6.4).
+
+    The Remediator never sets `exploited`, never auto-applies the change, and a
+    candidate is `verified` only when its VerificationResult passed (Principle I:
+    demonstrated, not asserted)."""
+
+    finding_fingerprint: str
+    weakness_class: str
+    control: str                  # control id, or "none"
+    status: RemediationStatus
+    change: str = ""
+    reason: str = ""
+    generated_by: str = "template"   # "template" | "llm"
+    verification: Optional[VerificationResult] = None
+
+    def to_dict(self) -> dict:
+        return {
+            "finding_fingerprint": self.finding_fingerprint,
+            "weakness_class": self.weakness_class,
+            "control": self.control,
+            "status": self.status.value,
+            "change": self.change,
+            "reason": self.reason,
+            "generated_by": self.generated_by,
+            "verification": self.verification.to_dict() if self.verification else None,
+        }

@@ -34,8 +34,7 @@ class AttackMapper(Role):
     name = "attack-mapper"
 
 
-class Remediator(Role):
-    name = "remediator"
+from .remediator import Remediator   # §6.4 — fully implemented extension role
 
 
 class SelfImprover(Role):

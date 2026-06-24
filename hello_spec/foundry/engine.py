@@ -27,7 +27,7 @@ from .observability.session_log import SessionLog
 from .roles.cartographer import Cartographer
 from .roles.coverage_guide import CoverageGuide
 from .roles.detector import Detector
-from .roles.extensions import SelfImprover, VariantHunter
+from .roles.extensions import Remediator, SelfImprover, VariantHunter
 from .roles.indexer import Indexer
 from .roles.orchestrator import Orchestrator
 from .roles.reporter import Reporter
@@ -152,6 +152,15 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
     rollup = reporter.report(store, FilesystemIssueTracker(reports_dir, sandbox), tick)
     proposals = self_improver.propose_rules(det.rule_gaps, tick)
 
+    # §6.4 Remediator (opt-in extension): propose + verify candidate fixes.
+    remediations = []
+    rem_cfg = cfg.section("fleet").get("remediator", {})
+    if rem_cfg.get("enabled"):
+        remediator = role(Remediator, "remediator")
+        secure_dir = (base / rem_cfg.get("reference_dir", "../target/secure")).resolve()
+        remediations = remediator.remediate(store, index, target_root, rules_dir,
+                                            sandbox, reports_dir, secure_dir, tick)
+
     store.persist()
     log.record(event="status", **orch.status(store))
     log.persist()
@@ -172,6 +181,7 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         "surfaced": [f.fingerprint for f in store.surfaced()],
         "rule_gaps": [g.weakness_class for g in det.rule_gaps],
         "rule_proposals": proposals,
+        "remediations": [c.to_dict() for c in remediations],
         "coverage_complete": cov.complete,
         "auto_stop": auto_stop,
         "security_map": {
@@ -202,6 +212,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("\n--- self-improver rule proposals (rule-gap flywheel) ---")
         for p in result["rule_proposals"]:
             print(f"  * {p}")
+    if result.get("remediations"):
+        print("\n--- remediator candidate fixes (proposed, not applied) ---")
+        for c in result["remediations"]:
+            tail = c["control"] if c["status"] != "no-control" else c["reason"]
+            print(f"  [{c['status']:<11}] {c['weakness_class']:<8} {tail}")
     return 0
 
 

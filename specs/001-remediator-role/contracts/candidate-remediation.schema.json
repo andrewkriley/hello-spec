@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CandidateRemediation",
+  "description": "A verified-or-not proposed fix for one confirmed finding, written by the Remediator to reports_dir.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["finding_fingerprint", "weakness_class", "control", "status", "generated_by"],
+  "properties": {
+    "finding_fingerprint": {
+      "type": "string",
+      "description": "Identity of the finding being remediated (path+symbol+class)."
+    },
+    "weakness_class": {
+      "type": "string",
+      "pattern": "^CWE-[0-9]+$"
+    },
+    "control": {
+      "type": "string",
+      "description": "Secure control applied, or 'none' when unmapped.",
+      "examples": ["parameterized-query", "argv-no-shell", "ownership-check", "env-secret", "none"]
+    },
+    "change": {
+      "type": "string",
+      "description": "Human-readable description or unified diff. Empty when status=no-control."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["verified", "unverified", "no-control"]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Why unverified, or why no control. Required unless status=verified."
+    },
+    "generated_by": {
+      "type": "string",
+      "enum": ["template", "llm"]
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "finding_closed": { "type": "boolean" },
+        "new_findings": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "boolean" }
+      },
+      "required": ["finding_closed", "new_findings", "passed"]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "verified" } } },
+      "then": {
+        "required": ["verification"],
+        "properties": { "verification": { "properties": { "passed": { "const": true } } } }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "no-control" } } },
+      "then": { "properties": { "control": { "const": "none" } }, "required": ["reason"] }
+    }
+  ]
+}
