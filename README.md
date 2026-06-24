@@ -48,8 +48,10 @@ coordination substrate, governance, observability, and demonstrably honours all
 11 constitutional principles. The *fixes* in the secure twin apply CodeGuard's
 secure-by-default controls — and the engine then finds nothing.
 
-> **Want to see it?** A guided run-it-yourself tour is in
-> [`docs/SHOWCASE.md`](docs/SHOWCASE.md); diagrams in
+> **Want to see it?** Run **`make showcase`** for a local web page
+> (http://127.0.0.1:8000) that bundles the explainer, the diagrams, the docs, and
+> a button to run a scan. Or read the guided tour in
+> [`docs/SHOWCASE.md`](docs/SHOWCASE.md) and the diagrams in
 > [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## What's here
