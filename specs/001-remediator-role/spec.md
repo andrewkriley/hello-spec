@@ -89,7 +89,7 @@ unchanged afterwards; all candidates appear only in the review output.
 - **Finding without a mapped control** (e.g. the exploratory timing-comparison
   rule-gap class): reported as "no control available", never force-patched.
 - **A candidate that would change behaviour beyond the fix**: flagged unverified
-  because verification detects new findings or a structural break.
+  because the verification re-scan still finds the issue or surfaces a new finding.
 - **Non-true-positive findings** (needs-review, code-quality, false-positive,
   not-applicable): skipped — the Remediator does not act on unconfirmed findings.
 
@@ -121,10 +121,12 @@ unchanged afterwards; all candidates appear only in the review output.
 ### Key Entities *(include if feature involves data)*
 
 - **Candidate Remediation**: a proposed fix for one finding — references the
-  finding identity, names the control applied, describes the change, and carries
-  a verification status (verified / unverified) with a reason.
+  finding identity (fingerprint) and its weakness class, names the control
+  applied, describes the change, records how it was generated, and carries a
+  verification status (**verified / unverified / no-control**) with a reason.
 - **Verification Result**: the outcome of checking a candidate — whether the
-  finding was closed and whether any new finding appeared.
+  finding was closed and how many new findings appeared. A candidate passes
+  verification only when the finding is closed **and** zero new findings appear.
 
 ## Success Criteria *(mandatory)*
 

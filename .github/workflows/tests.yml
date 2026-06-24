@@ -1,0 +1,21 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false        # reference repos aren't needed to run the tests
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install runtime + test deps
+        run: pip install pyyaml pytest
+      - name: Run the test suite (deterministic stub backend)
+        run: python -m pytest -q
