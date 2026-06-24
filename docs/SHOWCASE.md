@@ -10,6 +10,18 @@ Pair it with the [architecture diagrams](ARCHITECTURE.md) and the plain-language
 > inspects is a teaching example with deliberate flaws (and a safe twin), not a
 > real product.
 
+## Run the whole showcase in your browser
+
+One command serves everything — the explainer, the diagrams, the docs, and a
+**button that runs a scan and shows the output** — at a local URL:
+
+```bash
+make showcase            # → http://127.0.0.1:8000   (Ctrl-C to stop)
+```
+
+It's a tiny stdlib-only server (no dependencies) bound to `127.0.0.1` only. Prefer
+the step-by-step CLI tour below? Read on.
+
 ## 1. Get it
 
 ```bash
