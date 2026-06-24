@@ -180,3 +180,25 @@ class CandidateRemediation:
             "generated_by": self.generated_by,
             "verification": self.verification.to_dict() if self.verification else None,
         }
+
+
+@dataclass
+class Variant:
+    """A lead surfaced by the Variant-Hunter (spec §6.2): another place the same
+    weakness class as a confirmed finding appears. A lead for human follow-up —
+    never a promoted finding (Constitution II/X)."""
+
+    source_fingerprint: str   # the confirmed true-positive this derives from
+    weakness_class: str
+    location: str             # "path::symbol"
+    verdict: str              # the sibling's current verdict
+    fingerprint: str          # the sibling's stable identity
+
+    def to_dict(self) -> dict:
+        return {
+            "source_fingerprint": self.source_fingerprint,
+            "weakness_class": self.weakness_class,
+            "location": self.location,
+            "verdict": self.verdict,
+            "fingerprint": self.fingerprint,
+        }
