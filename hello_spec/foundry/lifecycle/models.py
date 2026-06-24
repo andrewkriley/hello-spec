@@ -253,3 +253,21 @@ class AttackPath:
             "impact_fingerprint": self.impact_fingerprint,
             "narrative": self.narrative,
         }
+
+
+@dataclass
+class DeepTestFinding:
+    """A crash discovered by executing the target on generated input
+    (Deep-Tester, §6.1). A robustness/validation defect found by running the
+    code, not by static rules."""
+
+    entry_point: str          # "file::function"
+    crash_type: str           # the unhandled exception type, e.g. "ValueError"
+    sample_input: str         # a representative input that triggered it
+
+    def to_dict(self) -> dict:
+        return {
+            "entry_point": self.entry_point,
+            "crash_type": self.crash_type,
+            "sample_input": self.sample_input,
+        }

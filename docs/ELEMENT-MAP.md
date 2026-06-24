@@ -45,9 +45,15 @@ roles are fully implemented via the spec-kit workflow:
   findings into attack paths (a foothold like a hardcoded credential → an impact
   like remote code execution). Spec:
   [`specs/004-attack-mapper/`](../specs/004-attack-mapper/).
+- **Deep-Tester (§6.1)** — `roles/extensions/deep_tester.py`: generates inputs and
+  **executes** a runnable entry point (`target/*/parser.py`) in an isolated
+  subprocess, reporting de-duplicated crashes — bugs found by running the code,
+  not by static rules. Spec:
+  [`specs/005-deep-tester/`](../specs/005-deep-tester/).
 
-Only **Deep-Tester (§6.1)** (input-generation / fuzzing) remains a stub — it needs
-a richer target than the demo's tiny module to be meaningful.
+**All five §6 extension roles (§6.1 Deep-Tester, §6.2 Variant-Hunter, §6.3
+Attack-Mapper, §6.4 Remediator, §6.5 Self-Improver) are now implemented. No stubs
+remain.**
 
 ## Foundry — finding lifecycle (spec §7)
 
