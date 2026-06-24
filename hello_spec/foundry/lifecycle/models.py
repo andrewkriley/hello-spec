@@ -202,3 +202,28 @@ class Variant:
             "verdict": self.verdict,
             "fingerprint": self.fingerprint,
         }
+
+
+@dataclass
+class RuleProposal:
+    """A CodeGuard rule the Self-Improver authored from a rule-gap (§6.5). A
+    proposal for human acceptance, written to a sandbox path — never merged into
+    the committed corpus by the system (Constitution X). `verified` is set only
+    after a re-scan shows the rule catches the class (Constitution I)."""
+
+    weakness_class: str
+    rule_id: str
+    filename: str
+    matcher: str
+    verified: bool = False
+    path: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            "weakness_class": self.weakness_class,
+            "rule_id": self.rule_id,
+            "filename": self.filename,
+            "matcher": self.matcher,
+            "verified": self.verified,
+            "path": self.path,
+        }

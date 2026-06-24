@@ -24,9 +24,13 @@ Paths are relative to the repo root. Foundry refs are `spec.md` §/FR numbers an
 
 ## Foundry — extension roles (spec §6)
 
-In `hello_spec/foundry/roles/extensions/`. The Self-Improver (§6.5) turns
-rule-gap entries into proposed new rules. Two roles are fully implemented via the
-spec-kit workflow:
+In `hello_spec/foundry/roles/extensions/`. The **Self-Improver (§6.5)** closes the
+detection→prevention flywheel: for each rule-gap it **authors a real, validator-
+passing CodeGuard rule** (`roles/extensions/self_improver.py` + `foundry/
+rule_authoring.py`) and **verifies** it catches the class on a re-scan; proposals
+are written for human acceptance, the committed `rules/` corpus is never modified.
+Spec: [`specs/003-rule-gap-flywheel/`](../specs/003-rule-gap-flywheel/). Three
+roles are fully implemented via the spec-kit workflow:
 - **Remediator (§6.4)** — `roles/extensions/remediator.py` (+ `foundry/remediation.py`):
   proposes a candidate fix per confirmed true-positive and **verifies** it against
   an isolated copy before labelling it `verified`. Spec:

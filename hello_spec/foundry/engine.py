@@ -150,7 +150,12 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
     auto_stop = governor.should_stop(cov.complete, budget.runtime)
 
     rollup = reporter.report(store, FilesystemIssueTracker(reports_dir, sandbox), tick)
-    proposals = self_improver.propose_rules(det.rule_gaps, tick)
+    # §6.5 Self-Improver: author + verify a real CodeGuard rule per rule-gap
+    # (the detection→prevention flywheel). Proposals are written for human
+    # acceptance; the committed rules/ corpus is never modified.
+    proposals = self_improver.improve(
+        det.rule_gaps, target_root, rules_dir, index, sandbox,
+        reports_dir / "proposals", tick)
 
     # §6.4 Remediator (opt-in extension): propose + verify candidate fixes.
     remediations = []
@@ -186,7 +191,7 @@ def _run(cfg: EvalConfig, backend: Optional[str], target_override: Optional[str]
         "findings": [f.to_dict() for f in store.all()],
         "surfaced": [f.fingerprint for f in store.surfaced()],
         "rule_gaps": [g.weakness_class for g in det.rule_gaps],
-        "rule_proposals": proposals,
+        "rule_proposals": [p.to_dict() for p in proposals],
         "remediations": [c.to_dict() for c in remediations],
         "variants": [v.to_dict() for v in variants],
         "coverage_complete": cov.complete,
@@ -216,9 +221,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     print("\n--- evaluation rollup ---")
     print(result["rollup"])
     if result["rule_proposals"]:
-        print("\n--- self-improver rule proposals (rule-gap flywheel) ---")
+        print("\n--- self-improver: authored CodeGuard rules (rule-gap flywheel) ---")
         for p in result["rule_proposals"]:
-            print(f"  * {p}")
+            tag = "verified" if p["verified"] else "unverified"
+            print(f"  [{tag:<10}] {p['weakness_class']} -> {p['filename']} "
+                  f"(matcher: {p['matcher']})")
     if result.get("remediations"):
         print("\n--- remediator candidate fixes (proposed, not applied) ---")
         for c in result["remediations"]:
