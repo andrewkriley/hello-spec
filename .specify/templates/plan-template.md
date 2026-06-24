@@ -40,7 +40,33 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Derived from `.specify/memory/constitution.md` (the Foundry 11 principles). A
+plan MUST be able to answer each gate; mark N/A with a one-line reason where a
+principle does not apply to this feature.
+
+- [ ] **I. Evidence Over Assertion** — any "real"/"done"/"fixed" claim the plan
+      makes is backed by a checkable, mechanically verifiable signal, not model
+      confidence.
+- [ ] **II. Surface Only What Survives** — only outputs that passed a gate are
+      shown to a human; everything else stays internal.
+- [ ] **III. Liveness By Heartbeat** — long-running work judges health by
+      heartbeat/progress, never by wall-clock alone.
+- [ ] **IV. Claims Are Atomic And Mortal** — shared work units are claimed
+      atomically and released automatically if the holder dies.
+- [ ] **V. The Provider Is The Rate Arbiter** — no internal pre-throttle below a
+      provider's real limit; adapt to its backpressure.
+- [ ] **VI. Coverage Before Yield** — no "done"/auto-stop before the stated
+      goals were credibly attempted.
+- [ ] **VII. Exploited Means Demonstrated** — any "exploited"/proven claim comes
+      from an independent reproduction, never inference.
+- [ ] **VIII. Fingerprints Are Stable Under Edit** — identity is structural
+      (path + symbol + class), excludes line numbers/snippets.
+- [ ] **IX. Sandbox By Infrastructure** — egress/write boundaries are enforced by
+      the runtime, not by prompt.
+- [ ] **X. The Operator Outranks Every Agent** — operator input is authoritative;
+      no silent changes; automated decisions are overridable and recorded.
+- [ ] **XI. Persist Atomically** — shared artifacts are written-then-swapped;
+      no delete-then-write.
 
 ## Project Structure
 

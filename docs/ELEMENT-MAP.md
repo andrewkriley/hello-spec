@@ -24,8 +24,13 @@ Paths are relative to the repo root. Foundry refs are `spec.md` §/FR numbers an
 
 ## Foundry — extension roles (spec §6)
 
-All five in `hello_spec/foundry/roles/extensions/__init__.py`; the Self-Improver
-(§6.5) does real work: it turns rule-gap entries into proposed new rules.
+In `hello_spec/foundry/roles/extensions/`. The Self-Improver (§6.5) turns
+rule-gap entries into proposed new rules. The **Remediator (§6.4)** is fully
+implemented in `roles/extensions/remediator.py` (+ `foundry/remediation.py`): it
+proposes a candidate fix per confirmed true-positive and **verifies** it against
+an isolated copy before labelling it `verified` — see
+[`specs/001-remediator-role/`](../specs/001-remediator-role/) for its
+spec/plan/tasks. Deep-Tester, Variant-Hunter and Attack-Mapper remain stubs.
 
 ## Foundry — finding lifecycle (spec §7)
 

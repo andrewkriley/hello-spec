@@ -130,6 +130,18 @@ This makes hello-spec a worked example of the *whole* Foundry loop: the seed spe
 (`foundry-security-spec/`) → spec-kit workflow → an implementation
 (`hello_spec/`) that the constitution governs and the tests verify.
 
+## Remediator (opt-in extension role)
+
+The Foundry **Remediator** (§6.4) is implemented as a worked example of the
+spec-driven workflow (`specs/001-remediator-role/`). When enabled
+(`fleet.remediator.enabled` in `config/evaluation.yaml`), after reporting it
+proposes a candidate fix for each confirmed true-positive and **verifies** it by
+applying the patch to an isolated copy and re-running detection — labelling it
+`verified` only if the finding closes and nothing new appears. It never mutates
+the target and never auto-applies (Constitution X); unmapped classes are reported
+`no-control`. `make scan` prints the candidate fixes; artifacts land in
+`build/reports/remediation-*.json`.
+
 ## Learning path
 
 1. Read `docs/ELEMENT-MAP.md` and pick a concept.

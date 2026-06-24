@@ -24,6 +24,8 @@ CodeGuard supplies the detection rules; a miniature Foundry engine consumes them
 
 ## Spec-driven workflow (spec-kit)
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+Active feature: **Remediator role** (Foundry §6.4).
+For technologies, project structure, and approach, read the current plan:
+`specs/001-remediator-role/plan.md` (spec, research, data-model, contracts, and
+quickstart live alongside it under `specs/001-remediator-role/`).
 <!-- SPECKIT END -->
